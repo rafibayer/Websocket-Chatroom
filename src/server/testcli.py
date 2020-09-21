@@ -1,31 +1,17 @@
 import asyncio
 import websockets
 
+URI =  "ws://localhost:5000"
+
 async def hello():
-    uri = "ws://localhost:5000"
-    async with websockets.connect(uri) as websocket:
+    async with websockets.connect(URI) as websocket:
         while True:
-            name = input("What's your name? ")
+            message = input("msg: ")
 
-            await websocket.send(name)
-            print(f"> {name}")
+            await websocket.send(message)
+            print(f"> {message}")
 
-            greeting = await websocket.recv()
-            print(f"< {greeting}")
+            resp = await websocket.recv()
+            print(f"< {resp}")
 
 asyncio.get_event_loop().run_until_complete(hello())
-
-# def logger(func):
-#     def wrapper(*args, **kwargs):
-#         print("wrapper")
-#         func(*args, **kwargs)
-#     return wrapper
-
-# class test:
-
-#     @logger
-#     def t(self, a1, a2, a3="a3"):
-#         print(f"{a1=}, {a2=}, {a3=}")
-
-# t = test()
-# t.t(1, 2)
