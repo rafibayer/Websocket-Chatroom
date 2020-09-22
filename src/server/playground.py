@@ -1,3 +1,3 @@
+longstr = "123456789"
 
-s = "!help"
-print(s.split()[1:])
+print(longstr[:1000])

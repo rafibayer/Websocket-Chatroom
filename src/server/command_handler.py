@@ -100,7 +100,7 @@ class CommandHandler:
             chatroom (Chatroom): chatroom in which the command was called
             args (List[str]): command args
         """
-        response = f"This is a websocket-based, in-memory, chatroom written in python by Rafi Bayer (github.com/rafibayer)"
+        response = f"This is a websocket-based, in-memory, chatroom written in Python by Rafi Bayer (github.com/rafibayer)"
         await user.websocket.send(response)
 
     @register("!setname", registered)
@@ -118,3 +118,17 @@ class CommandHandler:
             await user.websocket.send(f"!setname usage is \"!setname <new name>\"")
             return
         await chatroom.change_name(user.websocket, new_name)
+
+    @register("!who", registered)
+    async def who(self, user, chatroom, args):
+        """
+        Who command, allows user to see who is connected
+
+        Args:
+            user (User): user who called the command
+            chatroom (Chatroom): chatroom in which the command was called
+            args (List[str]): command args
+        """
+        everyone = ", ".join([user.name for user in chatroom.connected.values()])
+        resp = f"!who: {everyone}"
+        await user.websocket.send(resp)

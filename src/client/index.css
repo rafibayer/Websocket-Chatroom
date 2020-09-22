@@ -1,6 +1,12 @@
 .message {
     padding: 1%;
     border-bottom: solid gray;
+    background-color: lightgray;
+    margin: 1%;
+}
+
+.mine {
+    margin-left: 10%;
 }
 
 #maintitle {

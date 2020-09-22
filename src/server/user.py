@@ -1,4 +1,5 @@
 import datetime
+from uuid import uuid4
 
 class User:
     """
@@ -16,6 +17,7 @@ class User:
         self.websocket = websocket
         self.name = name
         self.connected_at = datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
+        self.uuid = str(uuid4())
 
     def __repr__(self):
         """
@@ -25,4 +27,4 @@ class User:
             str: str representation of User
         """
         conn_str = "Connected" if self.websocket.open else "Disconnected"
-        return f"User: \"{self.name}\", Connected at: {self.connected_at}, Status: {conn_str}"
+        return f"User: \"{self.name}\", Connected at: {self.connected_at}, Status: {conn_str}, UUID {self.uuid}"

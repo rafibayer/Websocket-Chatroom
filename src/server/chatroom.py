@@ -52,7 +52,7 @@ class Chatroom:
             return
 
         outgoing_message = f"{user.name}: {message}"
-        await self.send_to_all(outgoing_message)
+        await self.send_to_all(outgoing_message, websocket)
 
     @logged
     async def handle_disconnect(self, websocket):

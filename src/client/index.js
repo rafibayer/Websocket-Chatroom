@@ -19,13 +19,14 @@ window.onload = function(){
             let outgoing = input.value;
             input.value = "";
             socket.send(outgoing);
+            message_recieved(outgoing, true);
         }
     };
 
 };
 
-function message_recieved(message) {
-    chatwindow.appendChild(get_message(message));
+function message_recieved(message, mine) {
+    chatwindow.appendChild(get_message(message, mine));
 }
 
 // Returns true if a scrollable element is at the bottom
@@ -36,9 +37,12 @@ function scrollableBottomed(scrollable) {
 }
 
 // Gets new message element for a given message
-function get_message(message) {
+function get_message(message, mine) {
     let new_message_element = document.createElement("div");
-    new_message_element.className = "message";
+    new_message_element.classList.add("message");
+    if (mine) {
+        new_message_element.classList.add("mine");
+    }
     new_message_element.innerText = message;
     return new_message_element;
 }

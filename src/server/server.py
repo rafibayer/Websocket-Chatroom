@@ -6,7 +6,7 @@ from utils import logged
 class Server:
 
     @logged
-    def __init__(self, host, port):
+    def __init__(self, host, port, max_message_len = 1000):
         """ 
         Creates a new websocket chatroom server
 
@@ -18,6 +18,7 @@ class Server:
         self.port = port
         self.running = False
         self.chatroom = Chatroom()
+        self.max_message_len = max_message_len
 
     @logged
     def start(self):
@@ -45,7 +46,7 @@ class Server:
 
             # message in connection
             async for message in websocket:
-                await self.chatroom.handle_message(websocket, message)
+                await self.chatroom.handle_message(websocket, message[:self.max_message_len])
         finally:
 
             # websocket disconnects
