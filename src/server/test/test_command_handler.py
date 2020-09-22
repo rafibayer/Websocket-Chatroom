@@ -1,8 +1,6 @@
 import unittest
 import asyncio
-from command_handler import CommandHandler
-from chatroom import Chatroom
-from user import User
+from context import Chatroom, CommandHandler, User
 from mock.mockwebsocketclient import MockWebsocketClient as Mwsc
 
 class TestCommandHandler(unittest.TestCase):
@@ -33,10 +31,10 @@ class TestCommandHandler(unittest.TestCase):
     def test_bad_command(self):
         handler = CommandHandler()
         socket = Mwsc()
+        user = User(socket, "Test")
 
-        def bad():
-            asyncio.get_event_loop().run_until_complete(handler.handle_command("!fake", None, None))
-        self.assertRaises(ValueError, bad)
+        asyncio.get_event_loop().run_until_complete(handler.handle_command("!fake", user, None))
+        self.assertTrue("not a valid" in user.websocket.incoming[-1])
 
 
 if __name__ == '__main__':

@@ -1,8 +1,9 @@
 import unittest
 import asyncio
 import threading
-from chatroom import Chatroom
+from context import Chatroom
 from mock.mockwebsocketclient import MockWebsocketClient as Mwsc
+
 
 class TestServer(unittest.TestCase):
 
@@ -51,8 +52,6 @@ class TestServer(unittest.TestCase):
         
         self.assertIn("TO ALL", room.connected[fake_websocket].websocket.incoming)
         self.assertNotIn("TO ALL", room.connected[fake_websocket2].websocket.incoming)
-
-        
 
     def connect_fake_client(self, fake_websocket, chatroom, name=None):
         asyncio.get_event_loop().run_until_complete(chatroom.handle_connection(fake_websocket, name))
