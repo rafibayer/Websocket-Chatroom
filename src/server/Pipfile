@@ -8,6 +8,7 @@ verify_ssl = true
 [packages]
 websockets = "*"
 asyncio = "*"
+pyyaml = "*"
 
 [requires]
 python_version = "3.8"

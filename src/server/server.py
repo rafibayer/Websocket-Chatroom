@@ -2,11 +2,12 @@ import asyncio
 import websockets
 from chatroom import Chatroom
 from utils import logged
+from config_manager import ConfigManager
 
 class Server:
 
     @logged
-    def __init__(self, host, port, max_message_len = 1000):
+    def __init__(self, host, port, max_message_len=-1):
         """ 
         Creates a new websocket chatroom server
 
@@ -61,6 +62,8 @@ class Server:
         return f"Server @{self.host}:{self.port}, running: {self.running}, Chatroom: \n\t{str(self.chatroom)}"
 
 if __name__ == "__main__":
-    s = Server("localhost", 5000)
+    config = ConfigManager("server/config/server.yaml")
+    server_config = config["server"]
+    s = Server(server_config["host"], server_config["port"], server_config["max_message_len"])
     print(s)
     s.start()
