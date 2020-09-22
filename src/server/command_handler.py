@@ -100,7 +100,7 @@ class CommandHandler:
             chatroom (Chatroom): chatroom in which the command was called
             args (List[str]): command args
         """
-        response = f"This is a websocket-based, in-memory, chatroom written in python by <a href=\"https://github.com/rafibayer\">Rafi Bayer</a>"
+        response = f"This is a websocket-based, in-memory, chatroom written in python by Rafi Bayer (github.com/rafibayer)"
         await user.websocket.send(response)
 
     @register("!setname", registered)

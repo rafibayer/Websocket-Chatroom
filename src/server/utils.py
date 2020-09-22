@@ -6,9 +6,9 @@ def logged(func):
     Logs datetime, function name, and parameters.
 
     Args:
-        func ([Callable]): [Function to be logged]
+        func (Callable): Function to be logged
      Returns:
-        [Callable]: [Wrapped function with logging]
+        Callable: Wrapped function with logging
     """
     # Wrapped call to func with logging
     def logged_wrapper(*args, **kwargs):

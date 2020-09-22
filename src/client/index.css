@@ -1,0 +1,27 @@
+.message {
+    padding: 1%;
+    border-bottom: solid gray;
+}
+
+#maintitle {
+    text-align: center;
+}
+
+#chatwindow {
+    margin: 0 auto;
+    overflow: scroll;
+    height: 25vw;
+    width: 50%;
+    border: solid;
+}
+
+#inputsection{
+    width: 50%;
+    margin: 0 auto;
+    text-align: center;
+    border: solid;
+}
+
+#input{
+    width: 99%;
+}
