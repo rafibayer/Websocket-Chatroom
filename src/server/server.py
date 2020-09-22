@@ -24,8 +24,8 @@ class Server:
         """
         Starts the server
         """
-        start_server_async = websockets.serve(self.ws_handler_async, self.host, self.port)
         self.running = True
+        start_server_async = websockets.serve(self.ws_handler_async, self.host, self.port)
         asyncio.get_event_loop().run_until_complete(start_server_async)
         asyncio.get_event_loop().run_forever()
 
@@ -50,6 +50,11 @@ class Server:
 
             # websocket disconnects
             await self.chatroom.handle_disconnect(websocket)
+
+    @logged
+    def stop(self):
+        asyncio.get_event_loop().stop()
+        self.running = False
 
     def __str__(self):
         return f"Server @{self.host}:{self.port}, running: {self.running}, Chatroom: \n\t{str(self.chatroom)}"
