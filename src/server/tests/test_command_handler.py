@@ -1,6 +1,11 @@
 import unittest
 import asyncio
-from context import Chatroom, CommandHandler, User
+import os
+import sys
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../server')))
+from chatroom import Chatroom
+from command_handler import CommandHandler
+from user import User
 from mock.mockwebsocketclient import MockWebsocketClient as Mwsc
 
 class TestCommandHandler(unittest.TestCase):

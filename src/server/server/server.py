@@ -7,7 +7,7 @@ from config_manager import ConfigManager
 class Server:
 
     @logged
-    def __init__(self, host, port, max_message_len=-1):
+    def __init__(self, host, port, chat_config_path, max_message_len=-1):
         """ 
         Creates a new websocket chatroom server
 
@@ -18,7 +18,7 @@ class Server:
         self.host = host
         self.port = port
         self.running = False
-        self.chatroom = Chatroom()
+        self.chatroom = Chatroom(chat_config_path)
         self.max_message_len = max_message_len
 
     @logged
@@ -62,8 +62,6 @@ class Server:
         return f"Server @{self.host}:{self.port}, running: {self.running}, Chatroom: \n\t{str(self.chatroom)}"
 
 if __name__ == "__main__":
-    config = ConfigManager("server/config/server.yaml")
-    server_config = config["server"]
-    s = Server(server_config["host"], server_config["port"], server_config["max_message_len"])
-    print(s)
+    server_config = ConfigManager("../config/server.yaml")
+    s = Server(server_config["host"], server_config["port"], "../config/chat.yaml", server_config["max_message_len"])
     s.start()

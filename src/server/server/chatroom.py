@@ -1,24 +1,30 @@
 import asyncio
 import websockets
 import random
+from string import Template
 from collections.abc import Iterable
 from utils import logged
 from user import User
 from command_handler import CommandHandler
+from config_manager import ConfigManager
 
 class Chatroom:
     """ 
     Chatroom manager for websocket based connections
     """
     
-    def __init__(self):
-        """ 
-        Create a new chatroom
+    def __init__(self, chat_config_path):
+        """
+        Create a new Chatroom
+
+        Args:
+            chat_config_path (str): path to chat config yaml
         """
 
         # Dict[Websocket, User]
         self.connected = dict()
         self.command_handler = CommandHandler()
+        self.config = ConfigManager(chat_config_path)
     
     @logged
     async def handle_connection(self, websocket, name = None):
@@ -92,7 +98,7 @@ class Chatroom:
         """
         old_name = self.connected[websocket].name
         self.connected[websocket].name = new_name
-        await self.send_to_all(f"\"{old_name}\" changed their name to \"{new_name}\"")
+        await self.send_to_all(self.get_name_change_notification(old_name, new_name))
 
     def generate_name(self):
         """ 
@@ -101,7 +107,7 @@ class Chatroom:
         Returns:
             str: Randomly generated name
         """
-        return f"Client {random.randint(1000, 9999)}"
+        return Template(self.config["name_temp"]).substitute(name=random.randint(1000, 9999))
 
     def get_greeting(self, name):
         """ 
@@ -113,7 +119,7 @@ class Chatroom:
         Returns:
             str: greeting for new connection
         """
-        return f"Welcome, {name}! (hint: type \"!help\" for help)"
+        return Template(self.config["greeting_temp"]).substitute(name=name)
 
     def get_connection_notification(self, name):
         """ 
@@ -125,7 +131,7 @@ class Chatroom:
         Returns:
             str: notification for clients
         """
-        return f"{name} has connected!"
+        return Template(self.config["conn_notif_temp"]).substitute(name=name)
 
     def get_disconnect_notification(self, name):
         """ 
@@ -137,8 +143,20 @@ class Chatroom:
         Returns:
             str: notification for clients
         """
-        return f"{name} has disconnected!"
+        return Template(self.config["disconn_notif_temp"]).substitute(name=name)
 
+    def get_name_change_notification(self, old_name, new_name):
+        """
+        Generates name change notification
+
+        Args:
+            old_name (str): old name, before change
+            new_name (str): new name, after change
+
+        Returns:
+            str: notification for clients
+        """
+        return Template(self.config["namechange_notif_temp"]).substitute(old=old_name, new=new_name)
 
     def __str__(self):
         return f"Chatroom, connected: {self.connected}"

@@ -1,5 +1,8 @@
 import unittest
 import asyncio
+import os
+import sys
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../server')))
 from user import User
 from mock.mockwebsocketclient import MockWebsocketClient as Mwsc
 

@@ -3,7 +3,7 @@ from uuid import uuid4
 
 class User:
     """
-    Stores userdata for connected websocket client
+    Stores user data for connected websocket client
     """
 
     def __init__(self, websocket, name):
@@ -27,4 +27,4 @@ class User:
             str: str representation of User
         """
         conn_str = "Connected" if self.websocket.open else "Disconnected"
-        return f"User: \"{self.name}\", Connected at: {self.connected_at}, Status: {conn_str}, UUID {self.uuid}"
+        return f"<{self.name=},{self.connected_at=}, Status: {conn_str}, {self.uuid=}>"

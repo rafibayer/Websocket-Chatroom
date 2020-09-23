@@ -1,18 +1,21 @@
 import unittest
 import asyncio
 import threading
-from context import Chatroom
+import os
+import sys
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../server')))
+from chatroom import Chatroom
 from mock.mockwebsocketclient import MockWebsocketClient as Mwsc
 
 
 class TestServer(unittest.TestCase):
 
     def test_create_chatroom(self):
-        room = Chatroom()
+        room = Chatroom("../config/chat.yaml")
         self.assertIsNotNone(room.connected)
 
     def test_handle_connection(self):
-        room = Chatroom()
+        room = Chatroom("../config/chat.yaml")
         fake_websocket = Mwsc()
         self.connect_fake_client(fake_websocket, room)
 
@@ -22,18 +25,20 @@ class TestServer(unittest.TestCase):
         self.assertEqual(len(room.connected), 1)
 
     def test_handle_message(self):
-        room = Chatroom()
+        room = Chatroom("../config/chat.yaml")
         fake_websocket = Mwsc()
+        fake_websocket2 = Mwsc()
         self.connect_fake_client(fake_websocket, room)
+        self.connect_fake_client(fake_websocket2, room)
         asyncio.get_event_loop().run_until_complete(room.handle_message(fake_websocket, "Fake message"))
         
         self.assertIn(fake_websocket, room.connected)
         self.assertEqual(room.connected[fake_websocket].websocket, fake_websocket)
-        self.assertTrue(len(room.connected[fake_websocket].websocket.incoming) > 1)
+        self.assertTrue(len(room.connected[fake_websocket2].websocket.incoming) > 1)
 
 
     def test_handle_disconnect(self):
-        room = Chatroom()
+        room = Chatroom("../config/chat.yaml")
         fake_websocket = Mwsc()
         self.assertEqual(len(room.connected), 0)
         self.connect_fake_client(fake_websocket, room)
@@ -42,7 +47,7 @@ class TestServer(unittest.TestCase):
         self.assertEqual(len(room.connected), 0)
 
     def test_send_to_all(self):
-        room = Chatroom()
+        room = Chatroom("../config/chat.yaml")
         fake_websocket = Mwsc()
         fake_websocket2 = Mwsc()
 

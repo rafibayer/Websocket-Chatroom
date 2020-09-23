@@ -2,19 +2,22 @@ import unittest
 import asyncio
 import threading
 import time
+import os
+import sys
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../server')))
 from server import Server
+from config_manager import ConfigManager
 from mock.mockwebsocketclient import MockWebsocketClient as Mwsc
 
 class TestServer(unittest.TestCase):
 
     def test_create_server(self):
-        host = "localhost"
-        port = 5000
+        
+        server_config = ConfigManager("../config/server.yaml")
+        server = Server(server_config["host"], server_config["port"], "../config/chat.yaml", server_config["max_message_len"])
 
-        server = Server(host, port)
-
-        self.assertEqual(server.port, port)
-        self.assertEqual(server.host, host)
+        self.assertEqual(server.port, server_config["port"])
+        self.assertEqual(server.host, server_config["host"])
         self.assertFalse(server.running)
         self.assertIsNotNone(server.chatroom)
 
