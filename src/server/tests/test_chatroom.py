@@ -1,12 +1,10 @@
 import unittest
 import asyncio
-import threading
 import os
 import sys
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../server')))
 from chatroom import Chatroom
 from mock.mockwebsocketclient import MockWebsocketClient as Mwsc
-
 
 class TestServer(unittest.TestCase):
 
