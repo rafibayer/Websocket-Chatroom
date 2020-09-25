@@ -1,10 +1,45 @@
+# Port to publish in docker run
 PORT=80
+# Path to tests relative to Makefile
 TEST_PATH=./tests
-LOCAL_CONTAINER=rbayer/chatroom
+# container name for local build
+LOCAL_CONTAINER=rbayer/chatroom_local
+# container name for prod build
+PROD_CONTAINER=rbayer/chatroom_prod
+# running container name
 CONTAINER_NAME=chatroom
+# path to local config files relative to Dockerfile
+LOCAL_CONFIG_PATH=/config
+# path to prod config files relative to Dockerfile
+PROD_CONFIG_PATH=/config
+
+VM_USER=azureuser
+VM_ADDR=chatroom-ws.westus.cloudapp.azure.com
+
+KEY_PATH=~/.ssh/chatroom-vm_key.pem
 
 .PHONY: local
-	
+	echo "phony make target: Building and running local chatroom"
+
+# SSH into VM, pull latest, remove old container, run new container
+prod_deploy: prod_build
+	ssh -i $(KEY_PATH) $(VM_USER)@$(VM_ADDR) -- "echo "ssh succeeded" && \
+	docker pull $(PROD_CONTAINER):latest && \
+	docker rm -f $(CONTAINER_NAME) 2> /dev/null || true && \
+	docker run -d -p $(PORT):$(PORT) --name $(CONTAINER_NAME) \
+		--restart unless-stopped $(PROD_CONTAINER) && \
+	docker logs $(CONTAINER_NAME)"
+
+# build production container using prod configs and prod name.
+# push container to dockerhub
+prod_build:
+	docker build --build-arg configpath=$(PROD_CONFIG_PATH) -t $(PROD_CONTAINER):latest .
+	docker push $(PROD_CONTAINER):latest
+
+# ssh into VM, docker logs container
+prod_log:
+	ssh -i $(KEY_PATH) $(VM_USER)@$(VM_ADDR) -- "echo "ssh succeeded" && \
+	docker logs $(CONTAINER_NAME)"
 
 # Deploy a local instance of chatroom container
 local: build_local
@@ -14,11 +49,16 @@ local: build_local
 
 # build local chatroom container
 build_local:
-	docker build -t $(LOCAL_CONTAINER) .
+	docker build --build-arg configpath=$(LOCAL_CONFIG_PATH) -t $(LOCAL_CONTAINER) .
 
+# stop local instance of container
 stop_local:
 	docker rm -f $(CONTAINER_NAME)
 
-# run all unitests in /tests
+# ssh into VM shortcut
+ssh:
+	ssh -i $(KEY_PATH) $(VM_USER)@$(VM_ADDR)
+
+# run all unittests in /tests
 test:
 	cd $(TEST_PATH) && python -m unittest

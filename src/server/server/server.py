@@ -54,7 +54,8 @@ class Server:
             await self.chatroom.handle_disconnect(websocket)
 
     @logged
-    def stop(self):
+    async def stop(self):
+        await self.chatroom.handle_shutdown()
         asyncio.get_event_loop().stop()
         self.running = False
 

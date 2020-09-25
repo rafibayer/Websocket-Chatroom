@@ -41,7 +41,6 @@ class CommandHandler:
         """
         return self._regex.match(message) is not None
 
-
     @logged
     async def handle_command(self, command_message, user, chatroom):
         """
@@ -130,5 +129,7 @@ class CommandHandler:
             args (List[str]): command args
         """
         everyone = ", ".join([user.name for user in chatroom.connected.values()])
-        resp = f"!who: {everyone}"
+        resp = f"Connected Users: {everyone}"
         await user.websocket.send(resp)
+
+

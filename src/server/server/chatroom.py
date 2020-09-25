@@ -88,6 +88,16 @@ class Chatroom:
                 await conn.send(message)
 
     @logged
+    async def handle_shutdown(self):
+        """
+        Notifies all clients of shutdown and closes their connections
+        """
+        await self.send_to_all(self.get_shutdown_notification())
+        for conn in self.connected.keys():
+            print(f"closing {conn}")
+            await conn.close()
+
+    @logged
     async def change_name(self, websocket, new_name):
         """
         Changes name of user connected with websocket to new_name
@@ -157,6 +167,16 @@ class Chatroom:
             str: notification for clients
         """
         return Template(self.config["namechange_notif_temp"]).substitute(old=old_name, new=new_name)
+
+    def get_shutdown_notification(self):
+        """
+        Generates server shutdown notification
+
+        Returns:
+            str: notification for clients
+        """
+        return self.config["shutdown_notif_temp"]
+
 
     def __str__(self):
         return f"Chatroom, connected: {self.connected}"

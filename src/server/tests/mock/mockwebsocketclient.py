@@ -19,4 +19,7 @@ class MockWebsocketClient:
     async def recv(self):
         return message
 
+    async def close(self):
+        self.open = False
+
     

@@ -3,3 +3,4 @@ greeting_temp: "Welcome, $name (hint: type \"!help\" for help)"
 conn_notif_temp: $name has connected!
 disconn_notif_temp: $name has disconnected!
 namechange_notif_temp: "\"$old\" has changed their name to \"$new\""
+shutdown_notif_temp: "Server is shutting down... goodbye."
