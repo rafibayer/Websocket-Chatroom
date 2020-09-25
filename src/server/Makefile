@@ -1,25 +1,25 @@
+.DEFAULT_GOAL := local
+
+DOCKER_USER=rbayer
 # Port to publish in docker run
 PORT=80
 # Path to tests relative to Makefile
 TEST_PATH=./tests
 # container name for local build
-LOCAL_CONTAINER=rbayer/chatroom_local
+LOCAL_CONTAINER=$(DOCKER_USER)/chatroom_local
 # container name for prod build
-PROD_CONTAINER=rbayer/chatroom_prod
+PROD_CONTAINER=$(DOCKER_USER)/chatroom_prod
 # running container name
 CONTAINER_NAME=chatroom
 # path to local config files relative to Dockerfile
-LOCAL_CONFIG_PATH=/config
+LOCAL_CONFIG_PATH=/config/local_config
 # path to prod config files relative to Dockerfile
-PROD_CONFIG_PATH=/config
+PROD_CONFIG_PATH=/config/prod_config
 
 VM_USER=azureuser
 VM_ADDR=chatroom-ws.westus.cloudapp.azure.com
 
 KEY_PATH=~/.ssh/chatroom-vm_key.pem
-
-.PHONY: local
-	echo "phony make target: Building and running local chatroom"
 
 # SSH into VM, pull latest, remove old container, run new container
 prod_deploy: prod_build

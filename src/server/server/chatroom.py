@@ -25,6 +25,9 @@ class Chatroom:
         self.connected = dict()
         self.command_handler = CommandHandler()
         self.config = ConfigManager(chat_config_path)
+        self.name_generator = AdjAnimalNameGenerator(
+            self.config["name_generator"]["adjective_path"],
+            self.config["name_generator"]["animal_path"])
     
     @logged
     async def handle_connection(self, websocket, name = None):
@@ -112,12 +115,13 @@ class Chatroom:
 
     def generate_name(self):
         """ 
-        Generate a random client name str
+        Generate an initial name for a new client
 
         Returns:
             str: Randomly generated name
         """
-        return Template(self.config["name_temp"]).substitute(name=random.randint(1000, 9999))
+       
+        return self.name_generator.generate_name()
 
     def get_greeting(self, name):
         """ 
@@ -180,3 +184,14 @@ class Chatroom:
 
     def __str__(self):
         return f"Chatroom, connected: {self.connected}"
+
+class AdjAnimalNameGenerator:
+
+    def __init__(self, adj_path, animal_path):
+        with open(adj_path) as adjs:
+            self.adjectives = [l.strip().capitalize() for l in adjs.readlines()]
+        with open(animal_path) as animals:
+            self.animals = [l.strip().capitalize() for l in animals.readlines()]
+
+    def generate_name(self):
+        return f"{random.choice(self.adjectives)}{random.choice(self.animals)}"

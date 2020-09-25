@@ -13,8 +13,8 @@ class TestServer(unittest.TestCase):
 
     def test_create_server(self):
         
-        server_config = ConfigManager("../config/server.yaml")
-        server = Server(server_config["host"], server_config["port"], "../config/chat.yaml", server_config["max_message_len"])
+        server_config = ConfigManager("../config/test_config/server.yaml")
+        server = Server(server_config["host"], server_config["port"], "../config/test_config/chat.yaml", server_config["max_message_len"])
 
         self.assertEqual(server.port, server_config["port"])
         self.assertEqual(server.host, server_config["host"])

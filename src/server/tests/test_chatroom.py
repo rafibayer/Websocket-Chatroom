@@ -9,11 +9,11 @@ from mock.mockwebsocketclient import MockWebsocketClient as Mwsc
 class TestServer(unittest.TestCase):
 
     def test_create_chatroom(self):
-        room = Chatroom("../config/chat.yaml")
+        room = Chatroom("../config/test_config/chat.yaml")
         self.assertIsNotNone(room.connected)
 
     def test_handle_connection(self):
-        room = Chatroom("../config/chat.yaml")
+        room = Chatroom("../config/test_config/chat.yaml")
         fake_websocket = Mwsc()
         self.connect_fake_client(fake_websocket, room)
 
@@ -23,7 +23,7 @@ class TestServer(unittest.TestCase):
         self.assertEqual(len(room.connected), 1)
 
     def test_handle_message(self):
-        room = Chatroom("../config/chat.yaml")
+        room = Chatroom("../config/test_config/chat.yaml")
         fake_websocket = Mwsc()
         fake_websocket2 = Mwsc()
         self.connect_fake_client(fake_websocket, room)
@@ -36,7 +36,7 @@ class TestServer(unittest.TestCase):
 
 
     def test_handle_disconnect(self):
-        room = Chatroom("../config/chat.yaml")
+        room = Chatroom("../config/test_config/chat.yaml")
         fake_websocket = Mwsc()
         self.assertEqual(len(room.connected), 0)
         self.connect_fake_client(fake_websocket, room)
@@ -45,7 +45,7 @@ class TestServer(unittest.TestCase):
         self.assertEqual(len(room.connected), 0)
 
     def test_send_to_all(self):
-        room = Chatroom("../config/chat.yaml")
+        room = Chatroom("../config/test_config/chat.yaml")
         fake_websocket = Mwsc()
         fake_websocket2 = Mwsc()
 
@@ -57,7 +57,7 @@ class TestServer(unittest.TestCase):
         self.assertNotIn("TO ALL", room.connected[fake_websocket2].websocket.incoming)
 
     def test_name_change(self):
-        room = Chatroom("../config/chat.yaml")
+        room = Chatroom("../config/test_config/chat.yaml")
         fake_websocket = Mwsc()
         fake_websocket2 = Mwsc()
         self.connect_fake_client(fake_websocket, room, "old_name")
@@ -70,7 +70,7 @@ class TestServer(unittest.TestCase):
 
 
     def test_handle_shutdown(self):
-        room = Chatroom("../config/chat.yaml")
+        room = Chatroom("../config/test_config/chat.yaml")
         fake_websocket = Mwsc()
         fake_websocket2 = Mwsc()
         self.connect_fake_client(fake_websocket, room)
@@ -82,9 +82,6 @@ class TestServer(unittest.TestCase):
         self.assertIn(room.get_shutdown_notification(), room.connected[fake_websocket2].websocket.incoming)
         self.assertFalse(room.connected[fake_websocket].websocket.open)
         self.assertFalse(room.connected[fake_websocket2].websocket.open)
-
-
-
 
     def connect_fake_client(self, fake_websocket, chatroom, name=None):
         asyncio.get_event_loop().run_until_complete(chatroom.handle_connection(fake_websocket, name))

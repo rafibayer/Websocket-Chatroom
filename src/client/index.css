@@ -3,10 +3,15 @@
     border-bottom: solid gray;
     background-color: lightgray;
     margin: 1%;
+    margin-right: 10%;
+    margin-left: 1%;
+    box-shadow: gray 2px 2px 2px;
 }
 
 .mine {
+    margin-right: 1%;
     margin-left: 10%;
+    background-color: lightblue;
 }
 
 #maintitle {
@@ -26,8 +31,14 @@
     margin: 0 auto;
     text-align: center;
     border: solid;
+    display: flex;
 }
 
 #input{
-    width: 99%;
+    width: 80%;
+    padding: 1%;
+}
+
+#send {
+    width: 20%;
 }
