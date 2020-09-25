@@ -4,11 +4,12 @@ from chatroom import Chatroom
 from utils import logged
 from config_manager import ConfigManager
 
+
 class Server:
 
     @logged
     def __init__(self, host, port, chat_config_path, max_message_len=-1):
-        """ 
+        """
         Creates a new websocket chatroom server
 
         Args:
@@ -61,6 +62,7 @@ class Server:
 
     def __str__(self):
         return f"Server @{self.host}:{self.port}, running: {self.running}, Chatroom: \n\t{str(self.chatroom)}"
+
 
 if __name__ == "__main__":
     server_config = ConfigManager("../config/server.yaml")

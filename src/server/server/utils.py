@@ -1,5 +1,5 @@
 import datetime
-import os
+
 
 def logged(func):
     """
@@ -21,7 +21,3 @@ def logged(func):
         # Call function with original parameters
         return func(*args, **kwargs)
     return logged_wrapper
-
-import logging
-logger = logging.getLogger("test")
-logger.debug("logged")

@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "e336aaf96f19d663b4fb906d3c956a86fea91e68d684d06694be472138d6e718"
+            "sha256": "ab5d1b2c4d52e41e9f89205ab515570057010eb5efa36f083e8b0a777d977711"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -26,20 +26,12 @@
             "index": "pypi",
             "version": "==3.4.3"
         },
-        "flake8": {
+        "autopep8": {
             "hashes": [
-                "sha256:15e351d19611c887e482fb960eae4d44845013cc142d42896e9862f775d8cf5c",
-                "sha256:f04b9fcbac03b0a3e58c0ab3a0ecc462e023a9faf046d57794184028123aa208"
+                "sha256:d21d3901cb0da6ebd1e83fc9b0dfbde8b46afc2ede4fe32fbda0c7c6118ca094"
             ],
             "index": "pypi",
-            "version": "==3.8.3"
-        },
-        "mccabe": {
-            "hashes": [
-                "sha256:ab8a6258860da4b6677da4bd2fe5dc2c659cff31b3ee4f7f5d64e79735b80d42",
-                "sha256:dd8d182285a0fe56bace7f45b5e7d1a6ebcbf524e8f3bd87eb0f125271b8831f"
-            ],
-            "version": "==0.6.1"
+            "version": "==1.5.4"
         },
         "pycodestyle": {
             "hashes": [
@@ -48,14 +40,6 @@
             ],
             "markers": "python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3'",
             "version": "==2.6.0"
-        },
-        "pyflakes": {
-            "hashes": [
-                "sha256:0d94e0e05a19e57a99444b6ddcf9a6eb2e5c68d3ca1e98e90707af8152c90a92",
-                "sha256:35b2d75ee967ea93b55750aa9edbbf72813e06a66ba54438df2cfac9e3c27fc8"
-            ],
-            "markers": "python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3'",
-            "version": "==2.2.0"
         },
         "pyyaml": {
             "hashes": [
@@ -73,6 +57,13 @@
             ],
             "index": "pypi",
             "version": "==5.3.1"
+        },
+        "toml": {
+            "hashes": [
+                "sha256:926b612be1e5ce0634a2ca03470f95169cf16f939018233a670519cb4ac58b0f",
+                "sha256:bda89d5935c2eac546d648028b9901107a595863cb36bae0c73ac804a9b4ce88"
+            ],
+            "version": "==0.10.1"
         },
         "websockets": {
             "hashes": [

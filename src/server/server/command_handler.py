@@ -2,7 +2,8 @@ import asyncio
 import re
 from utils import logged
 
-def register(command, dict):
+
+def register(command, command_dict):
     """
     Decorator factory, decorator registers a function as a command in a given dict
 
@@ -11,15 +12,17 @@ def register(command, dict):
         dict (dict): dictionary to register commands in
     """
     def decorator(func):
-        dict[command] = func
+        command_dict[command] = func
         return func
     return decorator
 
+
 registered = dict()
+
 
 class CommandHandler:
 
-    def __init__(self, pattern = "^!.+"):
+    def __init__(self, pattern="^!.+"):
         """
         Create a new command handler
 
@@ -54,7 +57,7 @@ class CommandHandler:
         command_message = command_message.strip()
         if not self.is_command(command_message):
             await user.websocket.send(f"\"{command_message}\" is not a valid command (Syntax)")
-            return        
+            return
         command_name, command_args = self._parse_command(command_message)
         if command_name not in self.registered_commands:
             await user.websocket.send(f"\"{command_message}\" is not a valid command (Doesn't exist)")
@@ -99,7 +102,7 @@ class CommandHandler:
             chatroom (Chatroom): chatroom in which the command was called
             args (List[str]): command args
         """
-        response = f"This is a websocket-based, in-memory, chatroom written in Python by Rafi Bayer (github.com/rafibayer)"
+        response = f"This is a websocket-based, in-memory, chatroom created by Rafi Bayer (github.com/rafibayer)"
         await user.websocket.send(response)
 
     @register("!setname", registered)
@@ -131,5 +134,3 @@ class CommandHandler:
         everyone = ", ".join([user.name for user in chatroom.connected.values()])
         resp = f"Connected Users: {everyone}"
         await user.websocket.send(resp)
-
-

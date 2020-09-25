@@ -1,3 +1,5 @@
+""" Chatroom defines handlers for client behavior such as connecting and sending messages
+"""
 import random
 from string import Template
 from collections.abc import Iterable
@@ -27,10 +29,10 @@ class Chatroom:
         self.name_generator = AdjAnimalNameGenerator(
             self.config["name_generator"]["adjective_path"],
             self.config["name_generator"]["animal_path"])
-    
+
     @logged
-    async def handle_connection(self, websocket, name = None):
-        """ 
+    async def handle_connection(self, websocket, name=None):
+        """
         Registers a new websocket connection and notifies users
 
         Args:
@@ -44,7 +46,7 @@ class Chatroom:
 
     @logged
     async def handle_message(self, websocket, message):
-        """ 
+        """
         Handles incoming message:
             If it is a message, send to all users.
             If it is a command, process it
@@ -64,7 +66,7 @@ class Chatroom:
 
     @logged
     async def handle_disconnect(self, websocket):
-        """ 
+        """
         handles disconnect of websocket and notifies all connections
 
         Args:
@@ -74,8 +76,8 @@ class Chatroom:
         await self.send_to_all(self.get_disconnect_notification(user.name))
 
     @logged
-    async def send_to_all(self, message, skip = {}):
-        """ 
+    async def send_to_all(self, message, skip={}):
+        """
         Send a message to all connected clients, except those in skip
 
         Args:
@@ -113,17 +115,17 @@ class Chatroom:
         await self.send_to_all(self.get_name_change_notification(old_name, new_name))
 
     def generate_name(self):
-        """ 
+        """
         Generate an initial name for a new client
 
         Returns:
             str: Randomly generated name
         """
-       
+
         return self.name_generator.generate_name()
 
     def get_greeting(self, name):
-        """ 
+        """
         Generates greeting str for new connection
 
         Args:
@@ -135,7 +137,7 @@ class Chatroom:
         return Template(self.config["greeting_temp"]).substitute(name=name)
 
     def get_connection_notification(self, name):
-        """ 
+        """
         Generates notification str for a new connection
 
         Args:
@@ -147,7 +149,7 @@ class Chatroom:
         return Template(self.config["conn_notif_temp"]).substitute(name=name)
 
     def get_disconnect_notification(self, name):
-        """ 
+        """
         Generates disconnect notification str for disconnected client
 
         Args:
@@ -180,17 +182,19 @@ class Chatroom:
         """
         return self.config["shutdown_notif_temp"]
 
-
     def __str__(self):
         return f"Chatroom, connected: {self.connected}"
+
 
 class AdjAnimalNameGenerator:
 
     def __init__(self, adj_path, animal_path):
         with open(adj_path) as adjs:
-            self.adjectives = [l.strip().capitalize() for l in adjs.readlines()]
+            self.adjectives = [word.strip().capitalize()
+                               for word in adjs.readlines()]
         with open(animal_path) as animals:
-            self.animals = [l.strip().capitalize() for l in animals.readlines()]
+            self.animals = [word.strip().capitalize()
+                            for word in animals.readlines()]
 
     def generate_name(self):
         return f"{random.choice(self.adjectives)}{random.choice(self.animals)}"
