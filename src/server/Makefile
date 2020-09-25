@@ -37,9 +37,13 @@ prod_build:
 	docker push $(PROD_CONTAINER):latest
 
 # ssh into VM, docker logs container
-prod_log:
+prod_logs:
 	ssh -i $(KEY_PATH) $(VM_USER)@$(VM_ADDR) -- "echo "ssh succeeded" && \
 	docker logs $(CONTAINER_NAME)"
+
+prod_stop:
+	ssh -i $(KEY_PATH) $(VM_USER)@$(VM_ADDR) -- "echo "ssh succeeded" && \
+	docker rm -f $(CONTAINER_NAME)"
 
 # Deploy a local instance of chatroom container
 local: build_local

@@ -134,3 +134,25 @@ class CommandHandler:
         everyone = ", ".join([user.name for user in chatroom.connected.values()])
         resp = f"Connected Users: {everyone}"
         await user.websocket.send(resp)
+
+    @register("!env", registered)
+    async def env(self, user, chatroom, args):
+        """Env command, allows client to see what server envionrment they are talking to
+
+        Args:
+            user (User): user who called the command
+            chatroom (Chatroom): chatroom in which the command was called
+            args (List[str]): command args
+        """
+        await user.websocket.send(f"Enviornment: {chatroom.env}")
+
+    @register("!ping", registered)
+    async def ping(self, user, chatroom, args):
+        """Ping command, responds with pong
+
+        Args:
+        user (User): user who called the command
+        chatroom (Chatroom): chatroom in which the command was called
+        args (List[str]): command args
+        """
+        await user.websocket.send("pong!")

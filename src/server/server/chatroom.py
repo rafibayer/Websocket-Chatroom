@@ -29,6 +29,7 @@ class Chatroom:
         self.name_generator = AdjAnimalNameGenerator(
             self.config["name_generator"]["adjective_path"],
             self.config["name_generator"]["animal_path"])
+        self.env = self.config["meta"]["enviornment"]
 
     @logged
     async def handle_connection(self, websocket, name=None):

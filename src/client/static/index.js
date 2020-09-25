@@ -1,7 +1,7 @@
-
+"use strict";
 (function(server_url) {
+    
     window.onload = function(){
-
         const socket = new WebSocket(server_url);
         let input = $("input");
         input.focus()

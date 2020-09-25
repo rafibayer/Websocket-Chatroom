@@ -1,0 +1,1 @@
+var server_url = "ws://localhost"
