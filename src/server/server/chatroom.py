@@ -1,5 +1,3 @@
-import asyncio
-import websockets
 import random
 from string import Template
 from collections.abc import Iterable
@@ -8,11 +6,12 @@ from user import User
 from command_handler import CommandHandler
 from config_manager import ConfigManager
 
+
 class Chatroom:
-    """ 
+    """
     Chatroom manager for websocket based connections
     """
-    
+
     def __init__(self, chat_config_path):
         """
         Create a new Chatroom

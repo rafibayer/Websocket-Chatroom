@@ -1,3 +1,5 @@
+meta:
+    enviornment: LOCAL
 greeting_temp: "Welcome, $name (hint: type \"!help\" for help)"
 conn_notif_temp: $name has connected!
 disconn_notif_temp: $name has disconnected!
