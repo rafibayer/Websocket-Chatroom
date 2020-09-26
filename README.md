@@ -6,6 +6,8 @@
 ## About
 Websocket-chatroom is an in-memory, websocket based, chatroom server. 
 
+![Screenshot](images/screenshot.jpg)
+
 ## [Server](src/server/README.md)
 The websocket server is build entirely using [asyncio](https://docs.python.org/3/library/asyncio.html) and [websockets](https://websockets.readthedocs.io/en/stable/intro.html) in Python 3.8, and containerized using [Docker](https://www.docker.com/products/docker-desktop). 
 
