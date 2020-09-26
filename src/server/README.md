@@ -8,9 +8,9 @@
 This is the server for the Websocket-Chatroom. This server was created using asyncio and websockets for Python, and containerized using Docker. See [How It Works](#How-It-Works) for more details.
 
 ## How It Work
-`server.py` defines a Server object using our configuration files. When this object is created, a Chatroom object is also created to handle the behavior of our chatroom. when `.start()` is called on the server, asyncio is used to serve our function `ws_handler_async()` as a websocket handler. This function essentially describes what to do with each new connection. `ws_handler_async()` sends information about the connection to the Chatroom, as well as all future messages, from this client. 
+`server.py` defines a Server object using our configuration files. When this object is created, a Chatroom object is also created to handle the behavior of our chatroom. when `.start()` is called on the server, asyncio is used to serve our function `ws_handler_async()` as a websocket handler. This function essentially describes what to do with each new connection. `ws_handler_async()` sends information about the connection to the Chatroom, as well as all future messages from this client. 
 
-`chatroom.py` describes how most client interactions are handled. There are several "handler" methods, such as `handle_connection()`, `handle_message()`, and `handle_disconnect()` that take information about the event and define the appropriate behavior and response. Some are handled in `chatroom.py`, while others are send to other specialized handlers. 
+`chatroom.py` describes how most client interactions are handled. There are several "handler" methods, such as `handle_connection()`, `handle_message()`, and `handle_disconnect()` that take information about the event and define the appropriate behavior and response. Some are handled in `chatroom.py`, while others are sent to other specialized handlers. 
 
 ### Contents Overview
 - server
