@@ -1,5 +1,6 @@
 .DEFAULT_GOAL := local
 
+# Docker username
 DOCKER_USER=rbayer
 # Port to publish in docker run
 PORT=80
@@ -16,12 +17,12 @@ LOCAL_CONFIG_PATH=/config/local_config
 # path to prod config files relative to Dockerfile
 PROD_CONFIG_PATH=/config/prod_config
 
+# SSH stuff
 VM_USER=azureuser
 VM_ADDR=chatroom-ws.westus.cloudapp.azure.com
-
 KEY_PATH=~/.ssh/chatroom-vm_key.pem
 
-# SSH into VM, pull latest, remove old container, run new container
+# SSH into VM, pull latest container, remove old container, run new container, get logs
 prod_deploy: prod_build
 	ssh -i $(KEY_PATH) $(VM_USER)@$(VM_ADDR) -- "echo "ssh succeeded" && \
 	docker pull $(PROD_CONTAINER):latest && \
@@ -30,8 +31,7 @@ prod_deploy: prod_build
 		--restart unless-stopped $(PROD_CONTAINER) && \
 	docker logs $(CONTAINER_NAME)"
 
-# build production container using prod configs and prod name.
-# push container to dockerhub
+# build production container, push to dockerhub
 prod_build:
 	docker build --build-arg configpath=$(PROD_CONFIG_PATH) -t $(PROD_CONTAINER):latest .
 	docker push $(PROD_CONTAINER):latest
@@ -41,17 +41,18 @@ prod_logs:
 	ssh -i $(KEY_PATH) $(VM_USER)@$(VM_ADDR) -- "echo "ssh succeeded" && \
 	docker logs $(CONTAINER_NAME)"
 
+# ssh into VM, delete container
 prod_stop:
 	ssh -i $(KEY_PATH) $(VM_USER)@$(VM_ADDR) -- "echo "ssh succeeded" && \
 	docker rm -f $(CONTAINER_NAME)"
 
-# Deploy a local instance of chatroom container
+# Remove old local container, run new local container
 local: build_local
 	# ignore deletion failures with '-'
 	-docker rm -f $(CONTAINER_NAME) 
 	docker run -d -p $(PORT):$(PORT) --name $(CONTAINER_NAME) $(LOCAL_CONTAINER)
 
-# build local chatroom container
+# build local container
 build_local:
 	docker build --build-arg configpath=$(LOCAL_CONFIG_PATH) -t $(LOCAL_CONTAINER) .
 
@@ -65,4 +66,4 @@ ssh:
 
 # run all unittests in /tests
 test:
-	cd $(TEST_PATH) && python -m unittest
+	cd $(TEST_PATH) && python -bm unittest

@@ -19,7 +19,7 @@ class TestCommandHandler(unittest.TestCase):
 
         valid = ["!valid", "!help", "!valid with args"]
         invalid = ["message", "message 2", "message!", "!", "message !three"]
-        
+
         for s in valid:
             self.assertTrue(handler.is_command(s))
 

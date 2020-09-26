@@ -1,3 +1,6 @@
+"""
+command_handler allows clients to invoke registered commands via messages
+"""
 import asyncio
 import re
 from utils import logged
@@ -8,7 +11,7 @@ def register(command, command_dict):
     Decorator factory, decorator registers a function as a command in a given dict
 
     Args:
-        command (str): string to invoke command
+        command (str): string used to invoke command
         dict (dict): dictionary to register commands in
     """
     def decorator(func):
@@ -56,13 +59,16 @@ class CommandHandler:
         """
         command_message = command_message.strip()
         if not self.is_command(command_message):
+            # occurs when command is invalid after trimming (may have technically been valid before e.x. '!  ')
             await user.websocket.send(f"\"{command_message}\" is not a valid command (Syntax)")
             return
+
         command_name, command_args = self._parse_command(command_message)
         if command_name not in self.registered_commands:
             await user.websocket.send(f"\"{command_message}\" is not a valid command (Doesn't exist)")
             return
 
+        # Invoke the command, passing calling user, chatroom, and arguments
         command_func = self.registered_commands[command_name]
         await command_func(self, user, chatroom, command_args)
 

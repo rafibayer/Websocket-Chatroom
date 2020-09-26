@@ -1,4 +1,5 @@
-""" Chatroom defines handlers for client behavior such as connecting and sending messages
+"""
+Chatroom defines handlers for client behavior such as connecting and sending messages
 """
 import random
 from string import Template

@@ -66,5 +66,5 @@ class Server:
 
 if __name__ == "__main__":
     server_config = ConfigManager("../config/server.yaml")
-    s = Server(server_config["host"], server_config["port"], "../config/chat.yaml", server_config["max_message_len"])
-    s.start()
+    server = Server(server_config["host"], server_config["port"], "../config/chat.yaml", server_config["max_message_len"])
+    server.start()

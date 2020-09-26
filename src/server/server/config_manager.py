@@ -20,12 +20,14 @@ class ConfigManager:
         self.config = dict()
 
         if isinstance(config, str):
+            # argument is filepath
             try:
                 with open(config) as file:
                     self.config = yaml.safe_load(file)
             except IOError:
                 raise IOError(f"Could not read {config} as file")
         else:
+            # argument is stream
             try:
                 self.config = yaml.safe_load(config)
             except IOError:
@@ -57,7 +59,7 @@ class ConfigManager:
         Returns:
             dict: retrieved item
         """
-        result = self.get(item)
-        if result is None:
+        if item not in self.config:
             raise KeyError(f"{item} not found in config")
-        return result
+
+        return self.config[item]

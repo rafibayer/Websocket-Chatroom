@@ -3,8 +3,9 @@ import asyncio
 import os
 import sys
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../server')))
-from user import User
 from mock.mockwebsocketclient import MockWebsocketClient as Mwsc
+from user import User
+
 
 class TestUser(unittest.TestCase):
 
@@ -17,6 +18,7 @@ class TestUser(unittest.TestCase):
         self.assertIsNotNone(user.name)
         self.assertIsNotNone(user.connected_at)
         self.assertEqual(user.name, name)
+
 
 if __name__ == '__main__':
     unittest.main()
