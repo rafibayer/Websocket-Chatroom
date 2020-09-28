@@ -4,7 +4,7 @@
 (Hosted on [Microsft Azure](https://azure.microsoft.com/en-us/))
 
 ## About
-Websocket-chatroom is an in-memory, websocket based, chatroom server. 
+Websocket-chatroom is an in-memory, websocket based, chatroom. This project is split into 2 seperate parts, each hosted on their own Azure VM within Docker containers. See the README files in `src/client` and `src/server` for a more in-depth look at each component.  
 
 ![Screenshot](https://github.com/rafibayer/Websocket-Chatroom/blob/master/Images/screenshot.JPG)
 
