@@ -5,6 +5,8 @@ conn_notif_temp: $name has connected!
 disconn_notif_temp: $name has disconnected!
 namechange_notif_temp: "\"$old\" has changed their name to \"$new\""
 shutdown_notif_temp: "Server is shutting down... goodbye."
+private_message_to_temp: "PM -> $to_name: $message"
+private_messate_from_temp: "PM <- $from_name: $message"
 name_generator:
     name_temp: $name
     adjective_path: ./Data/adjectives.txt

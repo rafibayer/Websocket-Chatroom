@@ -2,12 +2,16 @@
 Chatroom defines handlers for client behavior such as connecting and sending messages
 """
 import random
+import logging
 from string import Template
 from collections.abc import Iterable
-from utils import logged
+from utils import log, log_message
 from user import User
 from command_handler import CommandHandler
 from config_manager import ConfigManager
+from response import Response, Origin
+
+logger = logging.getLogger(__name__)
 
 
 class Chatroom:
@@ -32,7 +36,7 @@ class Chatroom:
             self.config["name_generator"]["animal_path"])
         self.env = self.config["meta"]["enviornment"]
 
-    @logged
+    @log(logger, logging.INFO)
     async def handle_connection(self, websocket, name=None):
         """
         Registers a new websocket connection and notifies users
@@ -43,10 +47,10 @@ class Chatroom:
         name = name if name is not None else self.generate_name()
         user = User(websocket, name)
         self.connected[websocket] = user
-        await websocket.send(self.get_greeting(name))
-        await self.send_to_all(self.get_connection_notification(name), websocket)
+        await self.send(Response(self.get_greeting(name), Origin.SERVER), websocket)
+        await self.send_to_all(Response(self.get_connection_notification(name), Origin.SERVER), websocket)
 
-    @logged
+    @log(logger, logging.INFO)
     async def handle_message(self, websocket, message):
         """
         Handles incoming message:
@@ -63,10 +67,13 @@ class Chatroom:
             await self.command_handler.handle_command(message, user, self)
             return
 
-        outgoing_message = f"{user.name}: {message}"
-        await self.send_to_all(outgoing_message, websocket)
+        body = f"{user.name}: {message}"
+        all_response = Response(body, Origin.USER)
+        sender_response = Response(body, Origin.SELF)
+        await self.send_to_all(all_response, websocket)
+        await self.send(sender_response, websocket)
 
-    @logged
+    @log(logger, logging.INFO)
     async def handle_disconnect(self, websocket):
         """
         handles disconnect of websocket and notifies all connections
@@ -75,35 +82,51 @@ class Chatroom:
             websocket (Websocket): Connection that was closed
         """
         user = self.connected.pop(websocket)
-        await self.send_to_all(self.get_disconnect_notification(user.name))
+        await self.send_to_all(Response(self.get_disconnect_notification(user.name), Origin.SERVER))
 
-    @logged
-    async def send_to_all(self, message, skip={}):
+    @log(logger, logging.INFO)
+    async def send(self, response, websocket):
+        """Send a response to a websocket
+
+        Args:
+            response (Response): The Response to send
+            websocket (Websocket): The websocket to send the Response to
+        """
+        if not isinstance(response, Response):
+            log_message(f"Outgoing: {response} is not of type Response, preventing send", logging.CRITICAL)
+            return
+
+        if response.data["origin"] == Origin.DEFAULT:
+            log_message(f"Outgoing response has DEFAULT origin", logging.WARNING)
+
+        await websocket.send(response.json())
+
+    @log(logger, logging.INFO)
+    async def send_to_all(self, response, skip={}):
         """
         Send a message to all connected clients, except those in skip
 
         Args:
-            message (str): message to send to all connections
-            skip (set, optional): Websocket or Iterable[Websocket] to skip. Defaults to {}.
+            response (Response): Response to send to all connections
+            skip (set, optional): Union[Websocket, Iterable[Websocket]] to skip. Defaults to {}.
         """
         if not isinstance(skip, Iterable):
             skip = {skip}
 
-        for conn in self.connected:
-            if conn not in skip:
-                await conn.send(message)
+        for websocket in self.connected:
+            if websocket not in skip:
+                await self.send(response, websocket)
 
-    @logged
+    @log(logger, logging.CRITICAL)
     async def handle_shutdown(self):
         """
         Notifies all clients of shutdown and closes their connections
         """
-        await self.send_to_all(self.get_shutdown_notification())
+        await self.send_to_all(Response(self.get_shutdown_notification(), Origin.SERVER))
         for conn in self.connected.keys():
-            print(f"closing {conn}")
             await conn.close()
 
-    @logged
+    @log(logger, logging.INFO)
     async def change_name(self, websocket, new_name):
         """
         Changes name of user connected with websocket to new_name
@@ -113,8 +136,19 @@ class Chatroom:
             new_name (str): new name for user
         """
         old_name = self.connected[websocket].name
-        self.connected[websocket].name = new_name
-        await self.send_to_all(self.get_name_change_notification(old_name, new_name))
+        clean_new_name = "".join(new_name.split())
+        self.connected[websocket].name = clean_new_name
+        await self.send_to_all(Response(self.get_name_change_notification(old_name, clean_new_name), Origin.SERVER))
+
+    @log(logger, logging.INFO)
+    async def private_message(self, message, from_websocket, to_websocket):
+        # ~ message from "from_websocket": message
+        outgoing = Response(self.get_outgoing_pm(message, self.connected[from_websocket].name), Origin.PRIVATE)
+        # ~ message to "to_websocket": message
+        receipt = Response(self.get_pm_receipt(message, self.connected[to_websocket].name), Origin.PRIVATE)
+
+        await self.send(outgoing, to_websocket)
+        await self.send(receipt, from_websocket)
 
     def generate_name(self):
         """
@@ -183,6 +217,12 @@ class Chatroom:
             str: notification for clients
         """
         return self.config["shutdown_notif_temp"]
+
+    def get_outgoing_pm(self, message, from_name):
+        return Template(self.config["private_messate_from_temp"]).substitute(from_name=from_name, message=message)
+
+    def get_pm_receipt(self, message, to_name):
+        return Template(self.config["private_message_to_temp"]).substitute(to_name=to_name, message=message)
 
     def __str__(self):
         return f"Chatroom, connected: {self.connected}"

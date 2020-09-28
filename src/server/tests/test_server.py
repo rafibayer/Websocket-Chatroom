@@ -4,10 +4,12 @@ import threading
 import time
 import os
 import sys
+import test_helper
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../server')))
-from mock.mockwebsocketclient import MockWebsocketClient as Mwsc
-from config_manager import ConfigManager
 from server import Server
+from chatroom import Chatroom
+from config_manager import ConfigManager
+from mock.mockwebsocketclient import MockWebsocketClient as Mwsc
 
 
 class TestServer(unittest.TestCase):
@@ -15,16 +17,14 @@ class TestServer(unittest.TestCase):
     def test_create_server(self):
 
         server_config = ConfigManager("../config/test_config/server.yaml")
-        server = Server(
-            server_config["host"],
-            server_config["port"],
-            "../config/test_config/chat.yaml",
-            server_config["max_message_len"])
+        chat = Chatroom("../config/test_config/chat.yaml")
+        server = Server("../config/test_config/server.yaml", chat)
 
         self.assertEqual(server.port, server_config["port"])
         self.assertEqual(server.host, server_config["host"])
         self.assertFalse(server.running)
-        self.assertIsNotNone(server.chatroom)
+        self.assertIsNotNone(server.handler)
+        self.assertEqual(server.handler, chat)
 
     # yikes
     # def test_server_start(self):

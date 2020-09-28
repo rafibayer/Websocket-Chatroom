@@ -29,16 +29,17 @@
         input.value = "";
         if (outgoing.trim() != "") {
             socket.send(outgoing);
-            message_recieved(outgoing, true);
         }
     }
     
-    function message_recieved(message, mine) {
+    function message_recieved(message) {
+        console.log(message);
+        let message_json = JSON.parse(message)
         let chatwindow = $("chatwindow");
     
         // scroll if we are at most recent or we sent the message
         let shouldScroll = scrollableBottomed(chatwindow) || mine;
-        chatwindow.appendChild(get_message(message, mine));
+        chatwindow.appendChild(get_message(message_json.body, message_json.origin));
         if (shouldScroll){
             chatwindow.scrollTop = chatwindow.scrollHeight;
         }
@@ -52,12 +53,10 @@
     }
     
     // Gets new message element for a given message
-    function get_message(message, mine) {
+    function get_message(message, origin) {
         let new_message_element = document.createElement("div");
         new_message_element.classList.add("message");
-        if (mine) {
-            new_message_element.classList.add("mine");
-        }
+        new_message_element.classList.add(origin);
     
         new_message_element.innerText = message;
         return new_message_element;

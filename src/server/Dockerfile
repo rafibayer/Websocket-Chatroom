@@ -16,5 +16,5 @@ WORKDIR /server
 
 # Start server
 # -(U)nbuffered output flag to see print logs in docker logs
-CMD [ "python", "-u", "server.py" ]
+CMD [ "python", "-u", "app.py" ]
 

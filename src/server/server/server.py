@@ -1,28 +1,30 @@
 import asyncio
 import websockets
+import logging
 from chatroom import Chatroom
-from utils import logged
+from utils import log, log_message
 from config_manager import ConfigManager
+
+logger = logging.getLogger(__name__)
 
 
 class Server:
 
-    @logged
-    def __init__(self, host, port, chat_config_path, max_message_len=-1):
+    def __init__(self, server_config_path, handler):
         """
-        Creates a new websocket chatroom server
+        Creates a new websocket server
 
         Args:
-            host (str): Server host
-            port (int): Server port
+            server_config_path (str): path to server configuration
         """
-        self.host = host
-        self.port = port
+        self.config = ConfigManager(server_config_path)
+        self.host = self.config["host"]
+        self.port = self.config["port"]
+        self.max_message_len = self.config.get("max_message_len", -1)
         self.running = False
-        self.chatroom = Chatroom(chat_config_path)
-        self.max_message_len = max_message_len
+        self.handler = handler
 
-    @logged
+    @log(logger, logging.INFO)
     def start(self):
         """
         Starts the server
@@ -32,7 +34,7 @@ class Server:
         asyncio.get_event_loop().run_until_complete(start_server_async)
         asyncio.get_event_loop().run_forever()
 
-    @logged
+    @log(logger, logging.INFO)
     async def ws_handler_async(self, websocket, path):
         """
         Async websocket handler
@@ -43,28 +45,32 @@ class Server:
         """
 
         # new connection
-        await self.chatroom.handle_connection(websocket)
+        await self.handler.handle_connection(websocket)
         try:
 
             # message in connection
             async for message in websocket:
-                await self.chatroom.handle_message(websocket, message[:self.max_message_len])
+
+                # If max_message_len is a valid value, slice message before handling
+                if self.max_message_len >= 0:
+                    await self.handler.handle_message(websocket, message[:self.max_message_len])
+                else:
+                    await self.handler.handle_message(websocket, message)
+
+        except websockets.exceptions.ConnectionClosed:
+
+            # Log connection exception
+            log_message(logger, f"Exception: ConnectionClosed in websocket {websocket}", logging.CRITICAL)
         finally:
 
             # websocket disconnects
-            await self.chatroom.handle_disconnect(websocket)
+            await self.handler.handle_disconnect(websocket)
 
-    @logged
+    @log(logger, logging.CRITICAL)
     async def stop(self):
-        await self.chatroom.handle_shutdown()
+        await self.handler.handle_shutdown()
         asyncio.get_event_loop().stop()
         self.running = False
 
     def __str__(self):
-        return f"Server @{self.host}:{self.port}, running: {self.running}, Chatroom: \n\t{str(self.chatroom)}"
-
-
-if __name__ == "__main__":
-    server_config = ConfigManager("../config/server.yaml")
-    server = Server(server_config["host"], server_config["port"], "../config/chat.yaml", server_config["max_message_len"])
-    server.start()
+        return f"Server @{self.host}:{self.port}, running: {self.running}, Client: \n\t{str(self.handler)}"

@@ -1,5 +1,6 @@
 import asyncio
 
+
 class MockWebsocketClient:
 
     def __init__(self, message="incoming fake message", itr_delay=5):

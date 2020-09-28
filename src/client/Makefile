@@ -53,8 +53,22 @@ local: build_local
 	-docker rm -f $(CONTAINER_NAME)
 	docker run -d -p$(LOCAL_PORT):$(LOCAL_PORT) --name $(CONTAINER_NAME) $(LOCAL_CONTAINER)
 
+
+
 build_local:
 	docker build \
+	--build-arg build_const_path=$(LOCAL_CONFIG_PATH) \
+	--build-arg port=$(LOCAL_PORT) \
+	--build-arg nginx_config_path=$(LOCAL_NGINX_PATH) \
+	-t $(LOCAL_CONTAINER) .
+
+local_no_cache: build_local_no_cache
+	-docker rm -f $(CONTAINER_NAME)
+	docker run -d -p$(LOCAL_PORT):$(LOCAL_PORT) --name $(CONTAINER_NAME) $(LOCAL_CONTAINER)
+
+build_local_no_cache:
+	docker build \
+	--no-cache \
 	--build-arg build_const_path=$(LOCAL_CONFIG_PATH) \
 	--build-arg port=$(LOCAL_PORT) \
 	--build-arg nginx_config_path=$(LOCAL_NGINX_PATH) \

@@ -2,9 +2,11 @@ import unittest
 import asyncio
 import os
 import sys
+import test_helper
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../server')))
 from mock.mockwebsocketclient import MockWebsocketClient as Mwsc
 from chatroom import Chatroom
+from response import Response, Origin
 
 
 class TestServer(unittest.TestCase):
@@ -51,10 +53,11 @@ class TestServer(unittest.TestCase):
 
         self.connect_fake_client(fake_websocket, room)
         self.connect_fake_client(fake_websocket2, room)
-        asyncio.get_event_loop().run_until_complete(room.send_to_all("TO ALL", fake_websocket2))
+        resp = Response("TO ALL")
+        asyncio.get_event_loop().run_until_complete(room.send_to_all(resp, fake_websocket2))
 
-        self.assertIn("TO ALL", room.connected[fake_websocket].websocket.incoming)
-        self.assertNotIn("TO ALL", room.connected[fake_websocket2].websocket.incoming)
+        self.assertEqual(resp.json(), room.connected[fake_websocket].websocket.incoming[-1])
+        self.assertNotEqual(resp.json(), room.connected[fake_websocket2].websocket.incoming[-1])
 
     def test_name_change(self):
         room = Chatroom("../config/test_config/chat.yaml")
@@ -64,10 +67,10 @@ class TestServer(unittest.TestCase):
         self.connect_fake_client(fake_websocket2, room)
         asyncio.get_event_loop().run_until_complete(room.change_name(fake_websocket, "new_name"))
 
-        self.assertIn(room.get_name_change_notification("old_name", "new_name"),
-                      room.connected[fake_websocket].websocket.incoming)
-        self.assertIn(room.get_name_change_notification("old_name", "new_name"),
-                      room.connected[fake_websocket2].websocket.incoming)
+        expected = Response(room.get_name_change_notification("old_name", "new_name"), Origin.SERVER)
+
+        self.assertEqual(expected.json(), room.connected[fake_websocket].websocket.incoming[-1])
+        self.assertEqual(expected.json(), room.connected[fake_websocket2].websocket.incoming[-1])
         self.assertEqual(room.connected[fake_websocket].name, "new_name")
 
     def test_handle_shutdown(self):
@@ -79,8 +82,10 @@ class TestServer(unittest.TestCase):
 
         asyncio.get_event_loop().run_until_complete(room.handle_shutdown())
 
-        self.assertIn(room.get_shutdown_notification(), room.connected[fake_websocket].websocket.incoming)
-        self.assertIn(room.get_shutdown_notification(), room.connected[fake_websocket2].websocket.incoming)
+        expected = Response(room.get_shutdown_notification(), Origin.SERVER)
+
+        self.assertIn(str(expected), str(room.connected[fake_websocket].websocket.incoming[-1]))
+        self.assertIn(str(expected), str(room.connected[fake_websocket2].websocket.incoming[-1]))
         self.assertFalse(room.connected[fake_websocket].websocket.open)
         self.assertFalse(room.connected[fake_websocket2].websocket.open)
 

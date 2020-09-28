@@ -1,17 +1,32 @@
+body {
+    font-family: "Lucida Console", Monaco, monospace;
+}
+
 .message {
     padding: 1%;
     border-bottom: solid gray;
-    background-color: lightgray;
     margin: 1%;
-    margin-right: 10%;
-    margin-left: 1%;
     box-shadow: gray 2px 2px 2px;
 }
 
-.mine {
+.USER {
+    margin-right: 10%;
+    margin-left: 1%;
+    background-color: lightgray;
+}
+
+.SELF {
     margin-right: 1%;
     margin-left: 10%;
     background-color: lightblue;
+}
+
+.SERVER {
+    background-color:#ffa366;
+}
+
+.PRIVATE {
+    background-color: #ff99e6;
 }
 
 #maintitle {
@@ -21,12 +36,12 @@
 #chatwindow {
     margin: 0 auto;
     overflow: scroll;
-    height: 25vw;
+    height: 40vw;
     width: 50%;
     border: solid;
 }
 
-#inputsection{
+#inputsection {
     width: 50%;
     margin: 0 auto;
     text-align: center;
@@ -41,4 +56,17 @@
 
 #send {
     width: 20%;
+}
+
+/* Smartphones (portrait) ----------- */
+@media only screen 
+and (max-width : 1300px) {
+    #chatwindow {
+        height: 130vw;
+        width: 90%;
+    }
+
+    #inputsection {
+        width: 90%
+    }
 }
