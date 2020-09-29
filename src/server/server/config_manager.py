@@ -1,4 +1,8 @@
+from utils import log_message
 import yaml
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 class ConfigManager:
@@ -39,12 +43,15 @@ class ConfigManager:
 
         Args:
             item (str): Item to get
-            default (str, optional): optional default value. Defaults to None.
+            default (any, optional): optional default value. Defaults to None.
 
         Returns:
             dict: retrieved item
         """
-        return self.config.get(item, default)
+        if item in self.config:
+            return self.config[item]
+        log_message(logger, f"Config item {item} not found, using default", logging.WARNING)
+        return default
 
     def __getitem__(self, item):
         """

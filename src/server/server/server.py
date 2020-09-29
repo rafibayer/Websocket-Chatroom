@@ -60,7 +60,7 @@ class Server:
         except websockets.exceptions.ConnectionClosed:
 
             # Log connection exception
-            log_message(logger, f"Exception: ConnectionClosed in websocket {websocket}", logging.CRITICAL)
+            log_message(logger, f"Exception: ConnectionClosed in websocket {websocket}", logging.WARNING)
         finally:
 
             # websocket disconnects
@@ -68,9 +68,13 @@ class Server:
 
     @log(logger, logging.CRITICAL)
     async def stop(self):
+        """
+        Handles a server shutdown, waits for the handler to do whatever it needs to first
+        """
         await self.handler.handle_shutdown()
         asyncio.get_event_loop().stop()
         self.running = False
+        log_message(logger, "SHUTDOWN COMPLETE", logging.CRITICAL)
 
     def __str__(self):
         return f"Server @{self.host}:{self.port}, running: {self.running}, Client: \n\t{str(self.handler)}"
