@@ -224,8 +224,8 @@ class Chatroom:
     def get_pm_receipt(self, message, to_name):
         return Template(self.config["private_message_to_temp"]).substitute(to_name=to_name, message=message)
 
-    def __str__(self):
-        return f"Chatroom, connected: {self.connected}"
+    def __repr__(self):
+        return f"<Chatroom, connected: {self.connected}>"
 
 
 class AdjAnimalNameGenerator:

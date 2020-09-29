@@ -76,5 +76,5 @@ class Server:
         self.running = False
         log_message(logger, "SHUTDOWN COMPLETE", logging.CRITICAL)
 
-    def __str__(self):
-        return f"Server @{self.host}:{self.port}, running: {self.running}, Client: \n\t{str(self.handler)}"
+    def __repr__(self):
+        return f"<Server @{self.host}:{self.port}, running: {self.running}, handler: \n\t{str(self.handler)}>"

@@ -33,3 +33,6 @@ class Response:
 
     def __str__(self):
         return self.json()
+
+    def __repr__(self):
+        return f"<Response {self.json()}>"

@@ -35,7 +35,7 @@ def log(logger, level=logging.DEBUG):
         @functools.wraps(func)
         def wrapper(*args, **kwargs):
 
-            msg = f"{logger.__module__}: {func.__name__} ({str(*args)}, {str(**kwargs)})"
+            msg = f"{logger.__module__}: {func.__name__} ({repr(args)}, {repr(kwargs)})"
             logger.log(level=level, msg=msg)
             return func(*args, **kwargs)
 
