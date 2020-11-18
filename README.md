@@ -1,5 +1,5 @@
 # Websocket-Chatroom
-### Livesite: CURRENTLY INNACTIVE 
+### Livesite: CURRENTLY INACTIVE
 
 (Hosted on [Microsft Azure](https://azure.microsoft.com/en-us/))
 

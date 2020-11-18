@@ -136,15 +136,16 @@ class Chatroom:
             new_name (str): new name for user
         """
         old_name = self.connected[websocket].name
-        clean_new_name = "".join(new_name.split())
-        self.connected[websocket].name = clean_new_name
-        await self.send_to_all(Response(self.get_name_change_notification(old_name, clean_new_name), Origin.SERVER))
+
+        # sanitize by removing all whitespace
+        new_name = "".join(new_name.split())
+
+        self.connected[websocket].name = new_name
+        await self.send_to_all(Response(self.get_name_change_notification(old_name, new_name), Origin.SERVER))
 
     @log(logger, logging.INFO)
     async def private_message(self, message, from_websocket, to_websocket):
-        # ~ message from "from_websocket": message
         outgoing = Response(self.get_outgoing_pm(message, self.connected[from_websocket].name), Origin.PRIVATE)
-        # ~ message to "to_websocket": message
         receipt = Response(self.get_pm_receipt(message, self.connected[to_websocket].name), Origin.PRIVATE)
 
         await self.send(outgoing, to_websocket)
@@ -225,7 +226,7 @@ class Chatroom:
         return Template(self.config["private_message_to_temp"]).substitute(to_name=to_name, message=message)
 
     def __repr__(self):
-        return f"<Chatroom, connected: {self.connected}>"
+        return f"<Chatroom, connections: {len(self.connected)}>"
 
 
 class AdjAnimalNameGenerator:

@@ -105,7 +105,6 @@ class CommandHandler:
             chatroom (Chatroom): chatroom in which the command was called
             args (List[str]): command args
         """
-       
         body = f"Here are some commands you can use:\n\t{', '.join(self.registered_commands.keys())}"
         resp = Response(body, Origin.SERVER)
         await chatroom.send(resp, user.websocket)

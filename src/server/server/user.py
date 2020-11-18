@@ -27,5 +27,4 @@ class User:
         Returns:
             str: str representation of User
         """
-        conn_str = "Connected" if self.websocket.open else "Disconnected"
-        return f"<{self.name=},{self.connected_at=}, Status: {conn_str}, {self.uuid=}>"
+        return f"<User {self.name=},{self.connected_at=}, {self.websocket.open=}, {self.uuid=}>"

@@ -1,5 +1,5 @@
 # Websocket-Chatroom (Client)
-### Livesite: http://chatroom.westus.cloudapp.azure.com/
+### Livesite: CURRENTLY INACTIVE
 
 (Hosted on [Microsft Azure](https://azure.microsoft.com/en-us/))
 

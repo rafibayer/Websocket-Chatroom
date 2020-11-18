@@ -1,6 +1,6 @@
 # Websocket-Chatroom (Server)
-### Livesite:  http://chatroom.westus.cloudapp.azure.com/
-### Endpoint: ws://chatroom-ws.westus.cloudapp.azure.com/
+### Livesite:  CURRENTLY INACTIVE
+### Endpoint: CURRENTLY INACTIVE
 
 (Hosted on [Microsft Azure](https://azure.microsoft.com/en-us/))
 
